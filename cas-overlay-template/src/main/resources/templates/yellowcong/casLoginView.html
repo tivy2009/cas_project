@@ -13,7 +13,6 @@
 
 <body>
 <h1 th:text="${#themes.code('yellowcong.pageTitle')}"></h1>
-<h2>yellowcong的登录模板</h2>
 <div>
     <form method="post" th:object="${credential}">
         <div th:if="${#fields.hasErrors('*')}">
