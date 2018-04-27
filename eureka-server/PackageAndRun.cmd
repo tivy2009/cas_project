@@ -1,11 +1,11 @@
 @echo off
-@echo ######################EurekaServer伪集群部署######################
-@echo 本机host文件中添加  127.0.0.1 discovery1 discovery2
-@echo ###############################################################
+@echo ###############################EurekaServer伪集群部署###############################
+@echo add the config "127.0.0.1 discovery1 discovery2" to host file with your compute
+@echo #################################################################################
+@echo start to package and generat to the jar file.
 call mvn clean package spring-boot:repackage -Dmaven.test.skip=true
 cd target
-start cmd /k "title discovery1 && java -jar eureka-server-0.0.1-SNAPSHOT.jar --spring.profiles.active=discovery1"
-title "discovery2"
-call java -jar eureka-server-0.0.1-SNAPSHOT.jar --spring.profiles.active=discovery2
-cmd /k
-cd..
+@echo start to run the jar file with profils discovery1 and discovery2.
+start cmd /c "title discovery2 && java -jar eureka-server-0.0.1-SNAPSHOT.jar --spring.profiles.active=discovery2"
+title discovery1
+call java -jar eureka-server-0.0.1-SNAPSHOT.jar --spring.profiles.active=discovery1
