@@ -22,5 +22,7 @@
 <hr>
 
 <a href="index.jsp">Back to Home</a>
+
+<a href="https://cas.example.org:8443/cas/logout?service=https://localhost:8443/cas-sample-java-webapp/logout.jsp">logout</a>
 </body>
 </html>
