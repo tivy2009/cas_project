@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.huawei.pcloud.dao.slave.MachineMapper">
+    <resultMap id="BaseResultMap" type="com.huawei.pcloud.entity.Machine">
+        <id column="id" jdbcType="INTEGER" property="id" />
+        <result column="hostname" jdbcType="VARCHAR" property="hostname" />
+    </resultMap>
+    <sql id="Base_Column_List">
+        id, hostname
+    </sql>
+    <select id="selectByPrimaryKey" parameterType="INTEGER" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from machine
+        where id = #{id,jdbcType=INTEGER}
+    </select>
+    <insert id="insert" parameterType="com.huawei.pcloud.entity.Machine">
+        insert into machine (hostname)
+        values (#{hostname,jdbcType=VARCHAR})
+    </insert>
+</mapper>

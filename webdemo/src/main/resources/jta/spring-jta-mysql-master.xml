@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:jee="http://www.springframework.org/schema/jee"
+	xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.3.xsd 
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.3.xsd
+        http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee-4.3.xsd
+        http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-4.3.xsd
+        http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.3.xsd
+        http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.3.xsd"
+	>
+
+	<!-- 配置第一个数据源-->
+	<bean id="mysqlmasterdataSource" parent="abstractXADataSource">
+    <!-- value只要两个数据源不同就行，随便取名 -->
+        <property name="uniqueResourceName" value="mysql/master" />
+        <property name="xaDataSourceClassName"
+            value="com.mysql.jdbc.jdbc2.optional.MysqlXADataSource" />
+        <property name="xaProperties">
+            <props>
+                <prop key="URL">${mysql.master.db.url}</prop>
+                <prop key="user">${mysql.master.db.user}</prop>
+                <prop key="password">${mysql.master.db.password}</prop>
+            </props>
+        </property>
+    </bean>
+
+	<!-- Spring整合Mybatis -->
+    <bean id="mysqlmasterSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+		<property name="dataSource" ref="mysqlmasterdataSource" />
+		<!-- 加载mybatis全局配置文件 -->
+        <property name="configLocation" value="classpath:SqlMapConfig.xml"></property>
+		<property name="mapperLocations" value="classpath:mapper_mysql_master/*.xml" />
+	</bean>
+
+	<bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+        <property name="basePackage" value="com.huawei.pcloud.dao.master"/>
+        <property name="sqlSessionFactoryBeanName" value="mysqlmasterSessionFactory"/>
+    </bean>
+
+</beans>

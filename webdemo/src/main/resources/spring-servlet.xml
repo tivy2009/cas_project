@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+    xmlns:tx="http://www.springframework.org/schema/tx" xmlns:mvc="http://www.springframework.org/schema/mvc"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans 
+       http://www.springframework.org/schema/beans/spring-beans.xsd 
+       http://www.springframework.org/schema/context 
+       http://www.springframework.org/schema/context/spring-context.xsd 
+       http://www.springframework.org/schema/tx 
+       http://www.springframework.org/schema/tx/spring-tx.xsd
+          http://www.springframework.org/schema/mvc
+       http://www.springframework.org/schema/mvc/spring-mvc.xsd">
+
+    <!-- 启动包扫描功能，以便注册带有@Controllers、@service、@repository、@Component等注解的类成为spring的bean -->
+    <!-- 扫描所有的controller 但是不扫描service-->  
+	<context:component-scan base-package="com.huawei.pcloud.*">  
+	  <context:include-filter type="annotation" expression="org.springframework.stereotype.Controller"/>  
+	  <context:include-filter type="annotation" expression="org.springframework.web.bind.annotation.ControllerAdvice" />
+	  <context:exclude-filter type="annotation" expression="org.springframework.stereotype.Service"/>
+	  <context:exclude-filter type="annotation" expression="org.springframework.stereotype.Repository"/>
+	</context:component-scan>
+
+    <!-- 启动注解驱动的Spring MVC功能，注册请求url和注解POJO类方法的映射-->
+	<mvc:annotation-driven>  
+	    <mvc:message-converters>  
+	        <bean class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter"/>
+	        <bean class="org.springframework.http.converter.StringHttpMessageConverter">  
+	            <property name="supportedMediaTypes">  
+	                <list>  
+	                    <value>text/plain;charset=utf-8</value>  
+	                    <value>text/html;charset=UTF-8</value>  
+	                </list>  
+	            </property>  
+	        </bean>  
+	    </mvc:message-converters>  
+	</mvc:annotation-driven> 
+    
+
+    <!-- 访问静态资源 -->
+    <mvc:default-servlet-handler />
+ 
+    <!-- 对模型视图名称的解析，在请求时模型视图名称添加前后缀 -->
+    <bean
+        class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+        <property name="prefix" value="/WEB-INF/view/"></property> <!-- 前缀 -->
+        <property name="suffix" value=".jsp"></property> <!-- 后缀 -->
+    </bean>
+    
+</beans>

@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>       
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:context="http://www.springframework.org/schema/context"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:amq="http://activemq.apache.org/schema/core"
+    xmlns:jms="http://www.springframework.org/schema/jms"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans   
+        http://www.springframework.org/schema/beans/spring-beans-4.3.xsd   
+        http://www.springframework.org/schema/context   
+        http://www.springframework.org/schema/context/spring-context-4.3.xsd
+        http://www.springframework.org/schema/jms
+        http://www.springframework.org/schema/jms/spring-jms-4.3.xsd
+        http://activemq.apache.org/schema/core
+        http://activemq.apache.org/schema/core/activemq-core-5.15.3.xsd">
+
+	 <!-- ActiveMQ 连接工厂 -->
+    <!-- 真正可以产生Connection的ConnectionFactory，由对应的 JMS服务厂商提供-->
+    <!-- 如果连接网络：tcp://ip:61616；未连接网络：tcp://localhost:61616 以及用户名，密码-->
+	<!-- ActiveMQ提供了一个XAConnectionFactory来支持JTA事务 -->
+	<bean id="amqXaConnectionFactory" class="org.apache.activemq.ActiveMQXAConnectionFactory">
+		<property name="brokerURL" value="failover:(tcp://localhost:61616)?initialReconnectDelay=100" />
+		<property name="useAsyncSend" value="false" />
+        <property name="dispatchAsync" value="true" />
+	</bean>
+    
+    <!-- 使用atomikos支持jta，同时支持connect缓存功能 -->
+	<bean id="amqConnectionFactory" class="com.atomikos.jms.AtomikosConnectionFactoryBean"
+		init-method="init" destroy-method="close">
+		<property name="uniqueResourceName" value="XAactiveMQ" />
+		<property name="xaConnectionFactory" ref="amqXaConnectionFactory" />
+		<property name="poolSize" value="100" />
+	</bean>
+    
+    <!-- Spring JmsTemplate 的消息生产者 start-->
+    <!-- 定义消息队列（Queue） -->
+	<bean id="demoQueueDestination" class="org.apache.activemq.command.ActiveMQQueue">
+		<!-- 设置消息队列的名字 -->
+		<constructor-arg>
+			<value>unionpay.demo</value>
+		</constructor-arg>
+	</bean>
+
+    <!-- 定义JmsTemplate的Queue类型 -->
+    <bean id="jmsQueueTemplate" class="org.springframework.jms.core.JmsTemplate">
+        <property name="connectionFactory" ref="amqConnectionFactory" />
+		<property name="sessionTransacted" value="true" />
+        <!-- 非pub/sub模型（发布/订阅），即队列模式 -->
+        <property name="pubSubDomain" value="false" />
+    </bean>
+
+    <!-- 定义JmsTemplate的Topic类型 -->
+    <bean id="jmsTopicTemplate" class="org.springframework.jms.core.JmsTemplate">
+        <property name="connectionFactory" ref="amqConnectionFactory" />
+		<property name="sessionTransacted" value="true" />
+        <!-- pub/sub模型（发布/订阅） -->
+        <property name="pubSubDomain" value="true" />
+    </bean>
+    <!--Spring JmsTemplate 的消息生产者 end-->
+
+	<!-- 配置消息队列监听者（Queue） -->
+    <bean id="queueMessageListener" class="com.huawei.pcloud.service.impl.QueueMessageListener" />
+    
+    <bean id="jmsErrorHandler" class="com.huawei.pcloud.service.impl.JmsErrorHandler"/>
+
+    <!-- 定义Queue监听器（无事务） -->
+    <!-- 
+    <jms:listener-container
+        destination-type="queue" 
+        container-type="default" 
+        connection-factory="amqConnectionFactory" 
+        error-handler="jmsErrorHandler"
+        acknowledge="auto">
+        <jms:listener destination="unionpay.demo" ref="queueMessageListener"  concurrency="5-100" />
+    </jms:listener-container>
+     -->
+     
+    <!-- 定义Queue监听器（有事务） -->
+    <jms:listener-container
+        destination-type="queue" 
+        container-type="default" 
+        connection-factory="amqConnectionFactory"
+        transaction-manager="transactionManager"
+        error-handler="jmsErrorHandler"
+        acknowledge="transacted">
+        <jms:listener destination="unionpay.demo" ref="queueMessageListener"  concurrency="5-100" />
+    </jms:listener-container>
+	 
+</beans>
