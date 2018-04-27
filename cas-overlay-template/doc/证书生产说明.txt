@@ -1,0 +1,24 @@
+keytool -genkey -alias cas -keyalg RSA -keysize 2048 -keypass 123456 -storepass 123456 -keystore E:/software/cas/keystore/thekeystore -dname "CN=cas.example.org,OU=tivy.com,O=tivy,L=ShenZhen,ST=ShenZhen,C=CN"
+
+使用这个keystore生成一个证书，命令如下：
+keytool -exportcert -alias cas -keystore E:/software/cas/keystore/thekeystore -file E:/software/cas/keystore/thekeystore.cer -storepass 123456
+
+证书导入jre,jre一定要是你跑客户端的Tomcat的那个jre
+keytool -import -alias cas -keystore %JAVA_HOME%/jre/lib/security/cacerts -file E:/software/cas/keystore/thekeystore.cer
+证书库的密码是：changeit
+
+
+导入完我们可以看一下导入的结果：
+keytool -list -keystore %JAVA_HOME%/jre/lib/security/cacerts
+
+删掉这个证书，可以使用这个命令：
+keytool -delete -alias cas -keystore  %JAVA_HOME%/jre/lib/security/cacerts
+
+tomcat修改说明
+<Connector port="8443" protocol="org.apache.coyote.http11.Http11NioProtocol"
+               maxThreads="150" SSLEnabled="true">
+        <SSLHostConfig>
+            <Certificate certificateKeystoreFile="D:/liuyx.keystore"
+                         type="RSA" certificateKeystoreType="JKS" certificateKeystorePassword="123456"/>
+        </SSLHostConfig>
+    </Connector>

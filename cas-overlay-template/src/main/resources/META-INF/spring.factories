@@ -1,0 +1,4 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+  com.yellowcong.auth.conf.CaptchaConfiguration,\
+  com.yellowcong.auth.conf.CustomerAuthWebflowConfiguration,\
+  com.yellowcong.auth.conf.CustomAuthenticationEventExecutionPlanConfiguration
