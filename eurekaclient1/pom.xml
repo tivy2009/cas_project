@@ -19,7 +19,7 @@
             <dependency>
                 <groupId>org.springframework.cloud</groupId>
                 <artifactId>spring-cloud-netflix</artifactId>
-                <version>1.0.7.RELEASE</version>
+                <version>1.4.3.RELEASE</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
@@ -57,11 +57,6 @@
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-hystrix</artifactId>
         </dependency>
-        <dependency>
-		  <groupId>io.github.openfeign</groupId>
-		  <artifactId>feign-hystrix</artifactId>
-		  <version>9.6.0</version>
-		</dependency>
     </dependencies>
     <build>
         <plugins>

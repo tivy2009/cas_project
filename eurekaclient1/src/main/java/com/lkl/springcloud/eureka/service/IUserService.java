@@ -4,7 +4,7 @@ import org.springframework.cloud.netflix.feign.FeignClient;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
-@FeignClient(value = "clientService2")
+@FeignClient(value="clientService2",fallbackFactory=UserServiceByFeignImpl.class)
 public interface IUserService {
  
     @RequestMapping(value = "/discovery", method = RequestMethod.GET)

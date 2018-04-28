@@ -3,6 +3,7 @@ package com.lkl.springcloud.eureka;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
+import org.springframework.cloud.client.circuitbreaker.EnableCircuitBreaker;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
 import org.springframework.cloud.netflix.feign.EnableFeignClients;
@@ -18,6 +19,7 @@ import com.lkl.springcloud.eureka.service.IUserService;
 @RestController
 @EnableDiscoveryClient
 @EnableFeignClients
+@EnableCircuitBreaker
 public class App {
     
     @Autowired
@@ -31,6 +33,10 @@ public class App {
     @RequestMapping("/findService")
     public String findService(){
         return userService.findService();
+    }
+    
+    public String defaultStores() {
+        return "defaultStores";
     }
 
     public static void main(String[] args) {
