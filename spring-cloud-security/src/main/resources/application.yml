@@ -1,0 +1,42 @@
+server:
+    port: 9051
+spring:
+    application:
+        name: springcloudsecurity
+eureka:
+    client:
+        serviceUrl:
+            defaultZone: http://localhost:7072/eureka/
+feign:
+    hystrix:
+        enabled: true
+zuul:
+    routes:
+        users:
+            path: /clientService2/**
+            serviceId: clientService2
+
+ribbon:
+    eureka:
+        enabled: false
+
+security:
+    basic:
+        enabled: true      #启用SpringSecurity的安全配置项  
+    user:
+        name: jmxjava      #认证用户名  
+        password: jmxhello #认证密码
+        role:              #授权角色
+        ignored: /
+        sessions: never    # session策略
+    oauth2:
+        sso:
+            loginPath: /login   # 登录路径
+        client:
+            clientId: clientId
+            clientSecret: clientSecret
+            accessTokenUri: https://github.com/login/oauth/access_token
+            userAuthorizationUri: https://github.com/login/oauth/authorize
+        resource:
+            userInfoUri: https://api.github.com/user
+            preferTokenInfo: false

@@ -7,7 +7,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import com.lkl.springcloud.eureka.service.IUserService;
 
 import java.util.List;
 
