@@ -7,9 +7,11 @@ import org.springframework.cloud.client.circuitbreaker.EnableCircuitBreaker;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
 import org.springframework.cloud.netflix.feign.EnableFeignClients;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.lkl.springcloud.eureka.service.ISSOUserService;
 import com.lkl.springcloud.eureka.service.IUserService;
 
 /**
@@ -25,6 +27,9 @@ public class App {
     @Autowired
     private IUserService userService;
     
+    @Autowired
+    private ISSOUserService ssoUserService;
+    
     @RequestMapping("/")
     public String home() {
         return "Hello world eurekaclient1";
@@ -33,6 +38,11 @@ public class App {
     @RequestMapping("/findService")
     public String findService(){
         return userService.findService();
+    }
+    
+    @RequestMapping("/getUser/{acccess_token}")
+    public String getUser(@PathVariable String acccess_token){
+        return ssoUserService.getUser(acccess_token);
     }
     
     public String defaultStores() {

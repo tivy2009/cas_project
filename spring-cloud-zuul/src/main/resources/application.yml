@@ -8,6 +8,9 @@ eureka:
         serviceUrl:
             defaultZone: http://localhost:7072/eureka/
 zuul:
+    host:
+        connect-timeout-millis: 10000
+        socket-timeout-millis: 60000
     routes:
         api-a:
             path: /clientService2/**
@@ -18,3 +21,22 @@ zuul:
         api-a-url:
             path: /api-a-url/**
             url: http://localhost:2222/
+            
+####超时配置####
+ribbon:
+    ReadTimeout: 10000
+    ConnectTimeout: 10000
+    MaxAutoRetries: 1
+    MaxAutoRetriesNextServer: 2
+    eureka:
+        enabled: true
+hystrix:
+    command:
+        default:
+            execution:
+                timeout:
+                    enabled: true
+                isolation:
+                    thread:
+                        timeoutInMilliseconds: 600000
+###超时配置###

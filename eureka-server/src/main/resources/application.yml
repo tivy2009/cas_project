@@ -1,29 +1,26 @@
 spring:
     application:
         name: discovery-cluster
+eureka:
+    client:
+        registerWithEureka: true
+        fetchRegistry: true
+        serviceUrl:
+            defaultZone: http://discovery1:7071/eureka/,http://discovery2:7072/eureka/
+    server:
+        enable-self-preservation: true
+    instance:
+        metadataMap:
+            instanceId: ${spring.application.name}:${spring.application.instance_id:${random.value}}
+
 ---
-#项目启动可以通过 --spring.profiles.active={配置名称} 来启动不同的配置
-#java -jar discovery-cluster-0.0.1-SNAPSHOT.jar --spring.profiles.active=discovery1
 spring:
     profiles: discovery1
 server:
     port: 7071
 eureka:
-    client:
-        #registerWithEureka表示是否注册自身到eureka服务器，因为当前这个应用就是eureka服务器，单机没必要注册自身
-        registerWithEureka: true
-        #fetchRegistry表示是否从eureka服务器获取注册信息，同上，这里不需要。
-        fetchRegistry: true
-        serviceUrl:
-            #defaultZone就比较重要了，是设置eureka服务器所在的地址，查询服务和注册服务都需要依赖这个地址。
-            defaultZone: http://discovery2:7072/eureka/
     instance:
         hostname: discovery1
-        metadataMap:
-            instanceId: ${spring.application.name}:${spring.application.instance_id:${random.value}}
-    server:
-        #启用自我保护机制
-        enable-self-preservation: true
 
 ---
 spring:
@@ -31,19 +28,5 @@ spring:
 server:
     port: 7072
 eureka:
-    client:
-        #registerWithEureka表示是否注册自身到eureka服务器，因为当前这个应用就是eureka服务器，单机没必要注册自身
-        registerWithEureka: true
-        #fetchRegistry表示是否从eureka服务器获取注册信息，同上，这里不需要。
-        fetchRegistry: true
-        serviceUrl:
-            #defaultZone就比较重要了，是设置eureka服务器所在的地址，查询服务和注册服务都需要依赖这个地址。
-            defaultZone: http://discovery1:7071/eureka/
     instance:
         hostname: discovery2
-        metadataMap:
-            instanceId: ${spring.application.name}:${spring.application.instance_id:${random.value}}
-    server:
-        #启用自我保护机制
-        enable-self-preservation: true
-           
