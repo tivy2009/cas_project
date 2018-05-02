@@ -11,11 +11,12 @@ import org.springframework.web.bind.annotation.RequestMethod;
  */
 @Controller
 public class HelloController {
-//
-//    @RequestMapping("/hello")
-//    public String hello() {
-//        return "hello";
-//    }
+
+    @RequestMapping("/hello")
+    public String hello() {
+        return "hello";
+    }
+    
 //    @RequestMapping(value = "/doLogin",method = RequestMethod.POST)
 //    public void doLogin(String username,String password){
 //        System.out.println(username);

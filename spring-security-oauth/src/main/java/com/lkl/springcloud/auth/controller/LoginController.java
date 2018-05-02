@@ -12,15 +12,15 @@ public class LoginController {
 		return "welcome";
 	}
 
-	@RequestMapping("/")
-	public String index() {
-		return "index";
-	}
-
-	@RequestMapping("/login")
-	public String login() {
-		return "login";
-	}
+//	@RequestMapping("/")
+//	public String index() {
+//		return "index";
+//	}
+//
+//	@RequestMapping("/login")
+//	public String login() {
+//		return "login";
+//	}
 
 	// @RequestMapping(value = "/login",method = RequestMethod.GET)
 	// public String doLogin(String username,String password){

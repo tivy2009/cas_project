@@ -47,13 +47,13 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-//        http
-//                .authorizeRequests()
-//                .anyRequest().authenticated()
-//                .and()
-//                .formLogin().and()
-//                .csrf().disable()
-//                .httpBasic();
+        http
+                .authorizeRequests()
+                .anyRequest().authenticated()
+                .and()
+                .formLogin().and()
+                .csrf().disable()
+                .httpBasic();
         
 //        http.authorizeRequests()
 //        .antMatchers("/","/login","/login?error","/login/**").authenticated()
@@ -63,21 +63,21 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 //        .and().logout().logoutUrl("/logout").permitAll()
 //        .and().csrf().disable().httpBasic();
         
-        http
-        .authorizeRequests()
-            .antMatchers("/", "/home","/login","/login?error","/login/**").permitAll()
-            .anyRequest().authenticated()
-            .and()
-        .formLogin()
-            .loginPage("/login")
-            .failureUrl("/login?error")
-            .permitAll()
-            .and()
-        .logout()
-        	.logoutUrl("/logout")
-            .permitAll()
-            .and()
-        .csrf().disable().httpBasic();
+//        http
+//        .authorizeRequests()
+//            .antMatchers("/", "/home","/login","/login?error","/login/**").permitAll()
+//            .anyRequest().authenticated()
+//            .and()
+////        .formLogin()
+////            .loginPage("/login")
+////            .failureUrl("/login?error")
+////            .permitAll()
+////            .and()
+//        .logout()
+//        	.logoutUrl("/logout")
+//            .permitAll()
+//            .and()
+//        .csrf().disable().httpBasic();
         
      
     }
@@ -85,10 +85,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     public void configure(WebSecurity web) throws Exception {
     	//解决静态资源被拦截的问题
-        web.ignoring().antMatchers("/","/login","/login?error","/login/**")
-        .antMatchers("/static/**")
-        .antMatchers("/css/**")
-        .antMatchers("/favor.ioc");
+        //web.ignoring().antMatchers("/","/login","/login?error","/login/**");
+        web.ignoring().antMatchers("/static/**");
+        web.ignoring().antMatchers("/css/**");
+        web.ignoring().antMatchers("/favor.ioc");
     }
 
 }

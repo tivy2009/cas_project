@@ -21,11 +21,18 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter{
         http.
                 csrf().disable()
                 .exceptionHandling()
-                //.authenticationEntryPoint(new Http401AuthenticationEntryPoint("Bearer realm=\"webrealm\""))
-                .authenticationEntryPoint(new LoginUrlAuthenticationEntryPoint("/login"))
+                .authenticationEntryPoint(new Http401AuthenticationEntryPoint("Bearer realm=\"webrealm\""))
+                //.authenticationEntryPoint(new LoginUrlAuthenticationEntryPoint("/login"))
+                
+//                .and()
+//                .authorizeRequests()
+//                    .antMatchers("/", "/home","/login","/login?error","/login/**").permitAll()
+//                    .anyRequest().authenticated()
+                
                 .and()
                 .authorizeRequests().anyRequest().authenticated()
                 .and()
                 .httpBasic();
     }
+    
 }
