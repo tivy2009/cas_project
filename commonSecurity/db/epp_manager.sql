@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50717
 File Encoding         : 65001
 
-Date: 2018-05-02 18:29:36
+Date: 2018-05-03 11:46:42
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -20,7 +20,7 @@ SET FOREIGN_KEY_CHECKS=0;
 -- ----------------------------
 DROP TABLE IF EXISTS `sys_permission`;
 CREATE TABLE `sys_permission` (
-  `id` int(11) NOT NULL,
+  `id` varchar(32) NOT NULL,
   `name` varchar(200) DEFAULT NULL,
   `url` varchar(200) DEFAULT NULL,
   `description` varchar(200) DEFAULT NULL,
@@ -40,9 +40,9 @@ INSERT INTO `sys_permission` VALUES ('3', 'ROLE_SUPER', '/admin', 'admin', null)
 -- ----------------------------
 DROP TABLE IF EXISTS `sys_permission_role`;
 CREATE TABLE `sys_permission_role` (
-  `id` int(11) NOT NULL,
-  `role_id` int(11) NOT NULL,
-  `permission_id` int(11) NOT NULL,
+  `id` varchar(32) NOT NULL,
+  `role_id` varchar(32) NOT NULL,
+  `permission_id` varchar(32) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -58,8 +58,8 @@ INSERT INTO `sys_permission_role` VALUES ('3', '2', '1');
 -- ----------------------------
 DROP TABLE IF EXISTS `sys_role`;
 CREATE TABLE `sys_role` (
-  `id` int(11) NOT NULL,
-  `name` varchar(255) DEFAULT NULL,
+  `id` varchar(32) NOT NULL,
+  `name` varchar(100) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -75,29 +75,31 @@ INSERT INTO `sys_role` VALUES ('3', 'ROLE_SUPER');
 -- ----------------------------
 DROP TABLE IF EXISTS `sys_role_user`;
 CREATE TABLE `sys_role_user` (
-  `sys_user_id` int(11) NOT NULL,
-  `sys_role_id` int(11) NOT NULL
+  `id` varchar(32) NOT NULL,
+  `sys_user_id` varchar(32) NOT NULL,
+  `sys_role_id` varchar(32) NOT NULL,
+  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of sys_role_user
 -- ----------------------------
-INSERT INTO `sys_role_user` VALUES ('1', '1');
-INSERT INTO `sys_role_user` VALUES ('2', '2');
+INSERT INTO `sys_role_user` VALUES ('7099039a85a64844b0415ef2ce35a48a', '1', '1');
+INSERT INTO `sys_role_user` VALUES ('f062fbac837a47a78826a43b50b7e581', '2', '2');
 
 -- ----------------------------
 -- Table structure for `sys_user`
 -- ----------------------------
 DROP TABLE IF EXISTS `sys_user`;
 CREATE TABLE `sys_user` (
-  `id` int(11) NOT NULL,
-  `username` varchar(255) DEFAULT NULL,
-  `password` varchar(255) DEFAULT NULL,
+  `id` varchar(32) NOT NULL,
+  `username` varchar(100) DEFAULT NULL,
+  `password` varchar(50) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of sys_user
 -- ----------------------------
-INSERT INTO `sys_user` VALUES ('1', 'admin', 'admin');
-INSERT INTO `sys_user` VALUES ('2', 'abel', 'abel');
+INSERT INTO `sys_user` VALUES ('1', 'admin', '3c928bf98162167d4d7d8c1f52ef98d0');
+INSERT INTO `sys_user` VALUES ('2', 'abel', '3c928bf98162167d4d7d8c1f52ef98d0');

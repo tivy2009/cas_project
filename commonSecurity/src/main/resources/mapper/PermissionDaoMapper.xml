@@ -5,7 +5,7 @@
    SELECT * from Sys_permission
 </select>
 
- <select id="findByAdminUserId" parameterType="int" resultType="com.phy.common.security.entity.Permission">
+ <select id="findByAdminUserId" parameterType="string" resultType="com.phy.common.security.entity.Permission">
       select p.*
 		from Sys_User u
         LEFT JOIN sys_role_user sru on u.id= sru.Sys_User_id

@@ -15,5 +15,5 @@ import com.phy.common.security.entity.Permission;
 public interface PermissionDao {
     public List<Permission> findAll();
 
-    public List<Permission> findByAdminUserId(int userId);
+    public List<Permission> findByAdminUserId(String userId);
 }

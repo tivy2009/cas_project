@@ -11,17 +11,19 @@ import java.util.List;
  * @version: v1.0
  */
 public class SysUser {
-    private Integer id;
+    private String id;
     private String username;
     private String password;
 
     private List<SysRole> roles;
 
-    public Integer getId() {
+    public String getId() {
+    
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(String id) {
+    
         this.id = id;
     }
 
