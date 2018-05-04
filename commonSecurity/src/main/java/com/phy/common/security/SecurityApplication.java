@@ -5,6 +5,7 @@ import static org.springframework.boot.SpringApplication.run;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.security.oauth2.config.annotation.web.configuration.EnableAuthorizationServer;
 
 /**
  * 
@@ -16,6 +17,7 @@ import org.springframework.context.annotation.ComponentScan;
  */
 @ComponentScan(basePackages = "com.phy.common.security")
 @SpringBootApplication
+@EnableAuthorizationServer
 public class SecurityApplication {
     public static void main(String[] args) {
         ConfigurableApplicationContext run = run(SecurityApplication.class, args);
