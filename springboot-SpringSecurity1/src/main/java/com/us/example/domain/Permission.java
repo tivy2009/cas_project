@@ -15,6 +15,8 @@ public class Permission {
     //授权链接
     private String url;
 
+    private String method;
+    
     //父节点id
     private int pid;
 
@@ -50,13 +52,20 @@ public class Permission {
         this.url = url;
     }
 
-    public int getPid() {
+    public String getMethod() {
+		return method;
+	}
+
+	public void setMethod(String method) {
+		this.method = method;
+	}
+
+	public int getPid() {
         return pid;
     }
 
     public void setPid(int pid) {
         this.pid = pid;
     }
-
 
 }
