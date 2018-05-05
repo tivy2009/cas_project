@@ -6,7 +6,7 @@ spring:
 eureka:
     client:
         serviceUrl:
-            defaultZone: http://localhost:7071/eureka/
+            defaultZone: http://192.168.1.12:7071/eureka/
     instance:
         hostname: ${spring.cloud.client.ipAddress}
         preferIpAddress: true
@@ -16,3 +16,13 @@ feign:
         enabled: true
 #hystrix.command.default.execution.isolation.thread.timeoutInMilliseconds: 5000
 hystrix.command.default.execution.timeout.enabled: false
+
+---
+spring:
+    profiles: docker
+server:
+    port: ${port}
+eureka:
+    instance:
+        ip-address: "${host}"
+        instance-id: "${host}:${port}"
