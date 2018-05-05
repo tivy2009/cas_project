@@ -10,23 +10,18 @@ eureka:
     server:
         enable-self-preservation: true
     instance:
-        metadataMap:
-            instanceId: ${spring.application.name}:${spring.application.instance_id:${random.value}}
+        hostname: ${spring.cloud.client.ipAddress}
+        preferIpAddress: true
+        instance-id: ${spring.cloud.client.ipAddress}:${server.port}
 
 ---
 spring:
     profiles: discovery1
 server:
     port: 7071
-eureka:
-    instance:
-        hostname: discovery1
-
+    
 ---
 spring:
     profiles: discovery2
 server:
     port: 7072
-eureka:
-    instance:
-        hostname: discovery2
