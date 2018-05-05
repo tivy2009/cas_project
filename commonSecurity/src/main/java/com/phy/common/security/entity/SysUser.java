@@ -13,15 +13,9 @@ import org.springframework.security.core.userdetails.UserDetails;
  * @history:
  * @version: v1.0
  */
-<<<<<<< HEAD:springboot-SpringSecurity1/src/main/java/com/us/example/domain/SysUser.java
-
 public class SysUser implements UserDetails {
 	private static final long serialVersionUID = -2005115449938091620L;
-	private Integer id;
-=======
-public class SysUser {
     private String id;
->>>>>>> a18485c54f5c6c6437f4b658621f637ab09ccf4f:commonSecurity/src/main/java/com/phy/common/security/entity/SysUser.java
     private String username;
     private String password;
 

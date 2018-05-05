@@ -3,16 +3,9 @@ package com.phy.common.security.service;
 import java.util.ArrayList;
 import java.util.List;
 
-<<<<<<< HEAD:springboot-SpringSecurity1/src/main/java/com/us/example/service/CustomUserService.java
-import com.us.example.dao.PermissionDao;
-import com.us.example.dao.UserDao;
-import com.us.example.domain.Permission;
-import com.us.example.domain.SysUser;
-
-=======
->>>>>>> a18485c54f5c6c6437f4b658621f637ab09ccf4f:commonSecurity/src/main/java/com/phy/common/security/service/CustomUserDetailsService.java
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -62,14 +55,8 @@ public class CustomUserDetailsService implements UserDetailsService {
             List<Permission> permissions = permissionDao.findByAdminUserId(user.getId());
             List<GrantedAuthority> grantedAuthorities = new ArrayList<>();
             for (Permission permission : permissions) {
-<<<<<<< HEAD:springboot-SpringSecurity1/src/main/java/com/us/example/service/CustomUserService.java
                 if (permission != null && permission.getName()!=null) {
-                    GrantedAuthority grantedAuthority = new UrlGrantedAuthority(permission.getUrl(),permission.getMethod());
-=======
-                if (permission != null && permission.getName() != null) {
-
                     GrantedAuthority grantedAuthority = new SimpleGrantedAuthority(permission.getName());
->>>>>>> a18485c54f5c6c6437f4b658621f637ab09ccf4f:commonSecurity/src/main/java/com/phy/common/security/service/CustomUserDetailsService.java
                     grantedAuthorities.add(grantedAuthority);
                 }
             }

@@ -20,16 +20,9 @@ public class Permission {
 
     // 授权链接
     private String url;
-
-<<<<<<< HEAD:springboot-SpringSecurity1/src/main/java/com/us/example/domain/Permission.java
-    private String method;
     
-    //父节点id
-    private int pid;
-=======
     // 父节点id
     private String pid;
->>>>>>> a18485c54f5c6c6437f4b658621f637ab09ccf4f:commonSecurity/src/main/java/com/phy/common/security/entity/Permission.java
 
     public String getId() {
     
@@ -65,20 +58,7 @@ public class Permission {
         this.url = url;
     }
 
-<<<<<<< HEAD:springboot-SpringSecurity1/src/main/java/com/us/example/domain/Permission.java
-    public String getMethod() {
-		return method;
-	}
-
-	public void setMethod(String method) {
-		this.method = method;
-	}
-
-	public int getPid() {
-=======
     public String getPid() {
-    
->>>>>>> a18485c54f5c6c6437f4b658621f637ab09ccf4f:commonSecurity/src/main/java/com/phy/common/security/entity/Permission.java
         return pid;
     }
 
