@@ -1,27 +1,22 @@
 #!/bin/bash
-source ./_common.sh
+. ./_common.sh
 
-echo "脚本用于提供EurekaServer服务注册部署的独立的主机，但是微服务部署在Docker的场景下的启动脚本，需要配合Dockerfile文件使用."
+echo -e "The script is used to provide a stand-alone host for the EurekaServer service registration deployment,\nbut the micro service is deployed in the Docker scenario and needs to be used with the Dockerfile file."
 
-getip
-host=$?
-port=50092
-destimage=eurekaimage/eurekaclient1
-randomport=true
+#the host name
+host="192.168.1.14"
+isautosethost=true
 
-if [ ! -n "$host" ]
-then 
-	echo "the computer ipAddress is blank,exit program."
-	exit 1
-fi
-echo "the computer ipAddress is $host"
+#the host mapping port, ant to be called by the user
+israndomoutport=true
+outport=50092
 
-if [ randomport ]
-then
-	getprot
-	port=$?
-fi
-echo "the current port is :$port"
+#the port of the application in the docker
+dockerport=9091
+
+#the name of the docker image
+customimage=eurekaimage/eurekaclient1
+echo "the custom image is $customimage"
 
 echo "staring build project."
 #mvn clean package spring-boot:repackage -Dmaven.test.skip=true
@@ -33,11 +28,31 @@ echo "rm all the docker ."
 docker rm $(sudo docker ps -a -q)
 
 echo "rm the docker image."
-docker rmi $destimage
+docker rmi $customimage
 
 echo "staring docker build ."
-docker build -t $destimage .
+docker build -t $customimage .
+
+# auto setting external host ipaddress
+if [ isautosethost ]; then
+    getIpAddress
+    host=$ipAddress
+    if [ ! -n "$host" ]; then 
+        echo "the computer ipAddress is blank,exit program."
+        exit 1
+    fi
+fi
+echo "the computer ipAddress is $host"
+
+# auto setting external host port number
+if [ israndomoutport ]
+then
+    getRandomProt
+    if [ $randomProt > 0 ]; then
+        outport=$randomProt
+    fi
+fi
+echo "the current port is :$outport"
 
 echo "staring docker run ."
-#docker run -d -p $port:$port -e host=$host -e port=$port $destimage
-docker run -d -p $port:9091 -e host=$host -e port=$port $destimage
+docker run -d -p $outport:$dockerport -e host=$host -e port=$outport $customimage

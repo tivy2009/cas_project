@@ -1,9 +1,9 @@
 spring:
     cloud:
         inetutils:
-            #ignoredInterfaces:
-            #    - docker0
-            #    - veth.*
-            #    - VirtualBox*
-            preferredNetworks:
-                - 192.168.1.
+            ignoredInterfaces:
+                - docker0
+                - veth*
+                - VirtualBox*
+            #preferredNetworks:
+            #    - 192.168.1.
