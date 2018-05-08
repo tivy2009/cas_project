@@ -8,7 +8,7 @@ package com.phy.common.security.entity;
  * @history:
  * @version: v1.0
  */
-public class SysRole {
+public class SysRole implements java.io.Serializable {
 
     private String id;
     private String name;

@@ -16,6 +16,7 @@ import javax.sql.DataSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.oauth2.config.annotation.configurers.ClientDetailsServiceConfigurer;
 import org.springframework.security.oauth2.config.annotation.web.configuration.AuthorizationServerConfigurerAdapter;
@@ -48,6 +49,9 @@ public class CommonAuth2ServerConfigurerAdapter extends AuthorizationServerConfi
         return new JdbcTokenStore(dataSource);
     }
     
+    @Autowired
+    private TokenStore tokenStore;
+    
     //声明 ClientDetails实现
     @Bean 
     public ClientDetailsService clientDetails() {
@@ -62,7 +66,7 @@ public class CommonAuth2ServerConfigurerAdapter extends AuthorizationServerConfi
         // 配置TokenServices参数
         DefaultTokenServices tokenServices = new DefaultTokenServices();
         tokenServices.setTokenStore(endpoints.getTokenStore());
-        tokenServices.setSupportRefreshToken(false);
+        tokenServices.setSupportRefreshToken(true);
         tokenServices.setClientDetailsService(endpoints.getClientDetailsService());
         tokenServices.setTokenEnhancer(endpoints.getTokenEnhancer());
         tokenServices.setAccessTokenValiditySeconds( (int) TimeUnit.DAYS.toSeconds(30)); // 30天
@@ -78,10 +82,18 @@ public class CommonAuth2ServerConfigurerAdapter extends AuthorizationServerConfi
 //        .authorizedGrantTypes("authorization_code") // 该client允许的授权类型
 //        .scopes("app"); //允许的授权范围
         
+        //clients.jdbc(dataSource);
         clients.withClientDetails(clientDetails());
     }
 
-    
+    @Bean
+    @Primary
+    public DefaultTokenServices tokenServices() {
+        DefaultTokenServices tokenServices = new DefaultTokenServices();
+        tokenServices.setSupportRefreshToken(true); // support refresh token
+        tokenServices.setTokenStore(tokenStore); // use jdbc token store
+        return tokenServices;
+    }
     
 }
 

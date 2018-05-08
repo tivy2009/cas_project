@@ -66,14 +66,17 @@ public class MyInvocationSecurityMetadataSourceService implements FilterInvocati
         // if(map ==null) loadResourceDefine();
         loadResourceDefine();
         HttpServletRequest request = ((FilterInvocation) object).getHttpRequest();
+        StringBuffer url = request.getRequestURL();
+        System.out.println("url:"+url);
         AntPathRequestMatcher matcher;
         for (String key : map.keySet()) {
+            System.out.println("key:"+key);
             matcher = new AntPathRequestMatcher(key);
             if (matcher.matches(request)) {
                 return map.get(key);
             }
         }
-        return null;
+        return new ArrayList<ConfigAttribute>();
     }
 
     @Override
