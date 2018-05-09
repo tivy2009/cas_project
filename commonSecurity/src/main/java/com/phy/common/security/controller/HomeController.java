@@ -64,7 +64,7 @@ public class HomeController {
         return jsonString;
     }
     
-    @RequestMapping("/user")
+    @RequestMapping("/user/info")
     @ResponseBody
     public Principal user(Principal user) {
         System.out.println(user.getClass().getName());

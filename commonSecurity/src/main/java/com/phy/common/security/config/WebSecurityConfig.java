@@ -1,13 +1,8 @@
 package com.phy.common.security.config;
 
-import java.util.Arrays;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.ProviderManager;
-import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
@@ -38,25 +33,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         return new BCryptPasswordEncoder();
     }
     
-    @Bean
-    DaoAuthenticationProvider daoAuthenticationProvider(){
-        DaoAuthenticationProvider daoAuthenticationProvider = new DaoAuthenticationProvider();
-        daoAuthenticationProvider.setPasswordEncoder(passwordEncoder());
-        daoAuthenticationProvider.setUserDetailsService(userServiceDetails);
-        return daoAuthenticationProvider;
-}
-    
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth.userDetailsService(userServiceDetails).passwordEncoder(passwordEncoder());
-    }
-
-    @Override
-    protected AuthenticationManager authenticationManager() throws Exception {
-        ProviderManager authenticationManager = new ProviderManager(Arrays.asList(daoAuthenticationProvider()));
-        //不擦除认证密码，擦除会导致TokenBasedRememberMeServices因为找不到Credentials再调用UserDetailsService而抛出UsernameNotFoundException
-        authenticationManager.setEraseCredentialsAfterAuthentication(false);
-        return authenticationManager;
     }
     
     @Override
@@ -65,11 +44,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         .authorizeRequests()
             .antMatchers("/login").permitAll()
             .antMatchers("/logout").permitAll()
-            .antMatchers("/images/**").permitAll()
-            .antMatchers("/js/**").permitAll()
-            .antMatchers("/css/**").permitAll()
-            .antMatchers("/fonts/**").permitAll()
-            .antMatchers("/favicon.ico").permitAll()
             .anyRequest().authenticated()
         .and()
         .formLogin().loginPage("/login")
@@ -80,24 +54,13 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         .logout().invalidateHttpSession(true).clearAuthentication(true)
         .and()
         .httpBasic();
-        
-//        http
-//        .authorizeRequests()
-//        .anyRequest().authenticated()
-//        .and()
-//        .formLogin().and()
-//        .csrf().disable()
-//        .httpBasic();
     }
 
     @Override
     public void configure(WebSecurity web) throws Exception {
         //解决静态资源被拦截的问题
-        web.ignoring().antMatchers("/static/**");
-        web.ignoring().antMatchers("/css/**");
+        web.ignoring().antMatchers("/static/**","/css/**","/images/**","/js/**","/fonts/**");
         web.ignoring().antMatchers("/favor.ioc");
-//        web.ignoring().antMatchers("/login","/login?error","/login/**");
-        
     }
 
 }

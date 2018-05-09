@@ -1,6 +1,7 @@
 package com.phy.common.security.service;
 
 import java.io.IOException;
+import java.util.Collection;
 
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -10,6 +11,7 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.ConfigAttribute;
 import org.springframework.security.access.SecurityMetadataSource;
 import org.springframework.security.access.intercept.AbstractSecurityInterceptor;
 import org.springframework.security.access.intercept.InterceptorStatusToken;
@@ -60,6 +62,10 @@ public class MyFilterSecurityInterceptor extends AbstractSecurityInterceptor imp
      *             void
      */
     public void invoke(FilterInvocation fi) throws IOException, ServletException {
+    	
+    	Collection<ConfigAttribute> attributes = this.obtainSecurityMetadataSource()
+				.getAttributes(fi);
+    	
         InterceptorStatusToken token = super.beforeInvocation(fi);
         try {
             fi.getChain().doFilter(fi.getRequest(), fi.getResponse());
