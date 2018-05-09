@@ -5,9 +5,12 @@ import org.springframework.cloud.client.ServiceInstance;
 import org.springframework.cloud.client.discovery.DiscoveryClient;
 import org.springframework.context.ApplicationContext;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.context.SecurityContextImpl;
 import org.springframework.security.core.session.SessionRegistry;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -19,6 +22,8 @@ import com.lkl.springcloud.eureka.sso.SsoLoginService;
 
 import java.io.UnsupportedEncodingException;
 import java.security.Principal;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -33,11 +38,12 @@ public class DiscoveryService {
     @Autowired
     private DiscoveryClient discoveryClient;
     
-	@Autowired
-    private ApplicationContext applicationContext;
-    
     @RequestMapping("/discovery")
     public String doDiscoveryService(){
+        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication() .getPrincipal();
+        
+        System.out.println("username:"+userDetails.getUsername());
+        
         StringBuilder buf = new StringBuilder();
         List<String> serviceIds = discoveryClient.getServices();
         if(!CollectionUtils.isEmpty(serviceIds)){
@@ -61,26 +67,17 @@ public class DiscoveryService {
     	System.out.println("code:"+code);
     	SsoLoginService ssoLoginService = new SsoLoginService();
     	String accessToken = ssoLoginService.getAccessToken(code);
-    	Principal principal = new UsernamePasswordAuthenticationToken("AAAAAAAA", "BBBBBBBBBBB");
     	
-    	ServletRequestAttributes attrs =(ServletRequestAttributes) RequestContextHolder.getRequestAttributes(); 
-    	HttpServletRequest  request = attrs.getRequest();
-    	String sessionId = request.getSession().getId();
-    	
-    	//SessionRegistry sessionRegistry=(SessionRegistry)applicationContext.getBean("sessionRegistry");
-    	
-    	SessionRegistry sessionRegistry = applicationContext.getBean(SessionRegistry.class);
-    	
-    	sessionRegistry.registerNewSession(sessionId, principal);
-    	
-    	SecurityContextImpl securityContextImpl = new SecurityContextImpl();
-    	
-//    	Object principal=null; //com.phy.common.security.entity.SysUser@182420e6
-//    	Object credentials=null;//Credentials: [PROTECTED];
-//    	Authenticated
-//    	Authentication authentication = new UsernamePasswordAuthenticationToken(principal, credentials);
-//    	
-//    	securityContextImpl.setAuthentication(authentication);
+    	UserDetails userDetails = new org.springframework.security.core.userdetails.User(
+    	        "AAAAAAA", 
+    	        "BBBBBBB", 
+    	        new ArrayList<GrantedAuthority>());
+
+        SecurityContextHolder.setContext(SecurityContextHolder.createEmptyContext());
+        UsernamePasswordAuthenticationToken newAuthentication = new UsernamePasswordAuthenticationToken(
+                userDetails, accessToken, userDetails.getAuthorities());
+        newAuthentication.setDetails(userDetails);
+    	SecurityContextHolder.getContext().setAuthentication(newAuthentication);
     	
         return "accessToken:"+accessToken;
     }

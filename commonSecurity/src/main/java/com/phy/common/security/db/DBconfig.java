@@ -1,4 +1,10 @@
-package com.phy.common.security.config;
+/*
+ * Copyright @ 2018 tivy
+ * commonSecurity 2018-05-09 15:48:41
+ * All right reserved.
+ *
+ */
+package com.phy.common.security.db;
 
 import java.beans.PropertyVetoException;
 
@@ -10,25 +16,25 @@ import org.springframework.core.env.Environment;
 import com.mchange.v2.c3p0.ComboPooledDataSource;
 
 /**
- * 
- * @desc: 初始化dataSource, 并根据环境设置数据源各种参数
+ * @desc: commonSecurity
  * @author: tivy
- * @createTime: 2018-05-03 10:31:22
+ * @createTime: 2018-05-09 15:48:41
  * @history:
  * @version: v1.0
  */
 @Configuration
 public class DBconfig {
+
     @Autowired
     private Environment env;
 
     @Bean(name = "dataSource")
     public ComboPooledDataSource dataSource() throws PropertyVetoException {
         ComboPooledDataSource dataSource = new ComboPooledDataSource();
-        dataSource.setDriverClass(env.getProperty("ms.db.driverClassName"));
-        dataSource.setJdbcUrl(env.getProperty("ms.db.url"));
-        dataSource.setUser(env.getProperty("ms.db.username"));
-        dataSource.setPassword(env.getProperty("ms.db.password"));
+        dataSource.setDriverClass(env.getProperty("spring.datasource.druid.driver-class-name"));
+        dataSource.setJdbcUrl(env.getProperty("spring.datasource.url"));
+        dataSource.setUser(env.getProperty("spring.datasource.username"));
+        dataSource.setPassword(env.getProperty("spring.datasource.password"));
         dataSource.setMaxPoolSize(20);
         dataSource.setMinPoolSize(5);
         dataSource.setInitialPoolSize(10);
@@ -38,4 +44,5 @@ public class DBconfig {
 
         return dataSource;
     }
+    
 }

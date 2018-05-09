@@ -1,11 +1,8 @@
 package com.phy.common.security;
 
-import static org.springframework.boot.SpringApplication.run;
-
+import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.ConfigurableApplicationContext;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.security.oauth2.config.annotation.web.configuration.EnableAuthorizationServer;
+import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 
 /**
  * 
@@ -15,12 +12,11 @@ import org.springframework.security.oauth2.config.annotation.web.configuration.E
  * @history:
  * @version: v1.0
  */
-@ComponentScan(basePackages = "com.phy.common.security")
 @SpringBootApplication
-@EnableAuthorizationServer
+@EnableDiscoveryClient
 public class SecurityApplication {
     public static void main(String[] args) {
-        ConfigurableApplicationContext run = run(SecurityApplication.class, args);
+        SpringApplication.run(SecurityApplication.class, args);
     }
 
 }

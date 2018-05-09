@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
+import com.alibaba.fastjson.JSON;
 import com.phy.common.security.entity.Msg;
 
 /**
@@ -53,15 +54,21 @@ public class HomeController {
     	{
     		String key = enums.nextElement();
     		Object value = session.getAttribute(key);
-    		System.out.println("key:"+key+" value:"+value.toString());
+    		System.out.println("value:"+value.toString());
+    		System.out.println(value.getClass().getName());
+    		System.out.println("key:"+key+" value:"+JSON.toJSONString(value));
     	}
     	System.out.println("-----------------------------------");
-    	
-        return "hello admin";
+    	String jsonString = JSON.toJSONString(session);
+    	System.out.println("jsonString:"+jsonString);
+        return jsonString;
     }
     
     @RequestMapping("/user")
+    @ResponseBody
     public Principal user(Principal user) {
+        System.out.println(user.getClass().getName());
+        System.out.println(user.getName());
         return user;
     }
 }

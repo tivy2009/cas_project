@@ -1,12 +1,19 @@
 server:
     port: 8081
-ms:
-    db:
-        driverClassName: com.mysql.jdbc.Driver
-        url: jdbc:mysql://localhost:3306/epp_manager?characterEncoding=utf-8&useSSL=false&serverTimezone=UTC
+spring:
+    application:
+        name: oauthservice
+    jpa:
+        show-sql: true
+    datasource:
+        url: jdbc:mysql://localhost:3306/zuul-auth?useUnicode=true&characterEncoding=utf-8
         username: root
         password: 123456
-        maxActive: 500
+        druid:
+            driver-class-name: com.mysql.jdbc.Driver
+    redis:
+        host: 127.0.0.1
+        port: 6379
 
 endpoints:
     health:
@@ -25,6 +32,7 @@ security:
         resource:
             user-info-uri:  http://localhost:8081/user
             prefer-token-info: false
+#            filter-order: 3
 
 logging:
     config: classpath:logback.xml

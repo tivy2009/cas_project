@@ -6,6 +6,7 @@
  */
 package com.phy.test;
 
+import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 /**
@@ -27,6 +28,11 @@ public class TestBCrpytPasswordEncoder {
         //TODO Auto-generated method stub
         BCryptPasswordEncoder encoder =new BCryptPasswordEncoder();
         System.out.println(encoder.encode("123456"));
+        
+        String rawPassword = "123456";
+        String encodedPassword = "$2a$10$QW1hk5B8lmB/65.7yHWpH.EDgTpnlKjLJCOs8REx3potQ3Ubp7qqy";
+        boolean flag = BCrypt.checkpw(rawPassword.toString(), encodedPassword);
+        System.out.println(flag);
     }
 
 }

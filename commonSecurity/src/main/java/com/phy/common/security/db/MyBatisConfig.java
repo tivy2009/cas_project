@@ -1,4 +1,4 @@
-package com.phy.common.security.config;
+package com.phy.common.security.db;
 
 import javax.sql.DataSource;
 

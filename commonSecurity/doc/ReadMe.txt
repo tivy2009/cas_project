@@ -58,3 +58,14 @@ grant_type:authorization_code
 scope:app
 code:dyFNHq
 redirect_uri:http://www.baidu.com
+
+password方式 
+http://localhost:9999/oauth/token?username=admin&password=123456&grant_type=password&scope=app&client_id=webApp&client_secret=webApp
+返回:
+{
+    "access_token": "71839a07-e410-4dc4-ab26-e49e79a5301b",
+    "token_type": "bearer",
+    "refresh_token": "7540c127-dbb2-4b9b-ba58-0fd4852c2082",
+    "expires_in": 43199,
+    "scope": "app"
+}

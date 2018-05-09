@@ -25,7 +25,7 @@ import com.phy.common.security.entity.SysUser;
  * @version: v1.0
  */
 @Service
-public class CustomUserDetailsService implements UserDetailsService {
+public class UserDetailsServiceImpl implements UserDetailsService {
 
     @Autowired
     UserDao userDao;

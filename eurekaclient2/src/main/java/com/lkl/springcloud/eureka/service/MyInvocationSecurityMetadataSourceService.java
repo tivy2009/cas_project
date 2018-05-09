@@ -57,9 +57,7 @@ public class MyInvocationSecurityMetadataSourceService implements FilterInvocati
                 return map.get(key);
             }
         }
-        Collection<ConfigAttribute> returnCollection = new ArrayList<ConfigAttribute>(); 
-        returnCollection.add(new SecurityConfig("ROLE_NO_USER"));
-        return returnCollection;
+        return new ArrayList<ConfigAttribute>();
     }
 
     @Override
