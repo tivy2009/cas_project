@@ -34,6 +34,20 @@ cd nginx-1.13.12
 --http-uwsgi-temp-path=/var/temp/nginx/uwsgi \
 --http-scgi-temp-path=/var/temp/nginx/scgi
 
+
+添加sticky模块安装，如果已经安装了需要再添加模块，必须要重新编译
+ ./configure --prefix=/usr/local/nginx \
+ --with-http_stub_status_module \
+ --with-http_ssl_module --with-http_realip_module \
+ --with-http_image_filter_module \
+ --add-module=../nginx-goodies-nginx-sticky-module-ng
+ 如果./configure报错提示需要安装GD lib模块，则执行如下命令安装
+  yum install gd-devel
+  
+  然后 make 
+  如果是第一次安装接着执行make install
+  如果已经安装了，只是添加模块，则不用再执行make install  ,只需要复制nginx文件就可以 如 cp objs/nginx /usr/local/nginx/sbin/nginx 选择覆盖
+  
 注：将临时文件目录指定为/var/temp/nginx，需要在/var下创建temp及nginx目录
 
 编译安装
