@@ -23,6 +23,7 @@ public class AuthServerConfig extends AuthorizationServerConfigurerAdapter {
     public void configure(final AuthorizationServerSecurityConfigurer oauthServer) throws Exception {
         oauthServer.tokenKeyAccess("permitAll()")
                 .checkTokenAccess("isAuthenticated()");
+        oauthServer.allowFormAuthenticationForClients();
     }
 
     @Override
@@ -30,7 +31,7 @@ public class AuthServerConfig extends AuthorizationServerConfigurerAdapter {
         clients.inMemory()
                 .withClient("SampleClientId")
                 .secret("secret")
-                .authorizedGrantTypes("authorization_code")
+                .authorizedGrantTypes("authorization_code","password","refresh_token","client_credentials")
                 .scopes("user_info")
                 .autoApprove(true)
         // .accessTokenValiditySeconds(3600)
