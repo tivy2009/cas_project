@@ -1,3 +1,45 @@
+查看centos版本
+[root@localhost ~]# cat /etc/redhat-release
+CentOS release 5.5 (Final)
+
+查看系统是64位还是32位:
+[root@localhost ~]# getconf LONG_BIT
+64
+
+代理上网
+（1） http
+vim /etc/profile
+http_proxy=http://username:password@yourproxy:8080/
+ftp_proxy=http://username:password@yourproxy:8080/
+export http_proxy
+export ftp_proxy
+source /etc/profile
+（2） yum
+vim /etc/yum.conf
+proxy=http://username:password@yourproxy:8080/
+source /etc/profile
+(3) wget
+vim /etc/wgetrc
+http_proxy=http://username:password@yourproxy:8080
+https_proxy=http://username:password@yourproxy:8080
+ftp_proxy=http://username:password@yourproxy:8080
+source /etc/profile
+
+更新163源
+cd /etc/yum.repos.d
+mv CentOS-Base.repo CentOS-Base.repo.backup
+wget http://mirrors.163.com/.help/CentOS6-Base-163.repo
+mv CentOS6-Base-163.repo CentOS-Base.repo
+yum clean all
+
+更新阿里源
+cd /etc/yum.repos.d
+sudo mv CentOS-Base.repo CentOS-Base.repo.bak
+sudo wget -O CentOS-Base.repo http://mirrors.aliyun.com/repo/Centos-7.repo
+sudo wget -P /etc/yum.repos.d/ http://mirrors.aliyun.com/repo/epel-7.repo （添加阿里EPEL源，可选）
+yum clean all
+yum makecache
+
 安装所需环境
 (自己编译安装)
 yum install gcc-c++
@@ -48,7 +90,7 @@ cd nginx-1.13.12
   如果是第一次安装接着执行make install
   如果已经安装了，只是添加模块，则不用再执行make install  ,只需要复制nginx文件就可以 如 cp objs/nginx /usr/local/nginx/sbin/nginx 选择覆盖
   
-注：将临时文件目录指定为/var/temp/nginx，需要在/var下创建temp及nginx目录
+nginx 查看已经安装的模块 ./nginx -V
 
 编译安装
 make
