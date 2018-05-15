@@ -8,6 +8,19 @@
     <filter>
         <filter-name>ssofilter</filter-name>
         <filter-class>com.suncd.demooauth2client.servlet.SSOFilter</filter-class>
+        <init-param>
+        	<param-name>excludedPages</param-name>
+        	<param-value>/index.jsp,/register.html,/RegisterServlet,/LoginServlet</param-value>
+    	</init-param>
+    	<init-param>
+        	<param-name>ssoconfig</param-name>
+        	<param-value>{
+        		sso_url:"http://cas.example.org:8081/auth",
+        		client_id:"SampleClientId",
+                client_secret:"secret",
+                sub_app_url:"http://discovery2:8084/demo-webapp-client3"
+        	}</param-value>
+    	</init-param>
     </filter>
 	<filter-mapping>
 	    <filter-name>ssofilter</filter-name>
