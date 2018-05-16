@@ -132,3 +132,24 @@ systemctl enable nginx.service
 systemctl daemon-reload
 执行启动命令
 systemctl start nginx.service
+
+
+修改ulimit -n 最大文件数,也可以使用ulimit -a 查看
+/etc/security/limits.conf
+末尾添加如下:
+* soft nofile 204800
+* hard nofile 204800
+* soft nproc 204800
+* hard nproc 204800
+
+*             代表针对所有用户   
+noproc     是代表最大进程数   
+nofile     是代表最大文件打开数
+
+
+vi /etc/security/limits.d/20-nproc.conf
+#加大普通用户限制  也可以改为unlimited
+  *          soft    nproc     40960
+  root       soft    nproc     unlimited
+  
+修改完后需要重启
