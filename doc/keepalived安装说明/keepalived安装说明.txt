@@ -1,0 +1,41 @@
+yum install -y popt-devel
+cd /usr/local/src
+tar zxvf keepalived-1.2.2.tar.gz
+cd keepalived-1.2.2
+./configure --prefix=/
+make
+make install
+
+
+#!/bin/bash
+if [ "$(ps -ef | grep "nginx: master process"| grep -v grep )" == "" ]
+ then
+    killall keepalived
+ else
+    echo "nginx is running"
+fi
+
+chmod +x /root/check_nginx.sh
+
+keepalived安装配置目录
+/etc/keepalived
+
+加入到作业计划(不需要这样设置，直接在keepalived的配置中修改)
+crontab -e
+*/1 * * * * /root/check_nginx.sh >>/root/check_nginx.log
+
+查看SELinux状态
+getenforce
+
+临时关闭SELinux
+setenforce 0
+
+永久关闭
+vim /etc/selinux/config
+将SELINUX=enforcing改为SELINUX=disabled，保存后退出
+重启验证
+
+添加延迟启动
+chmod +x /etc/rc.d/rc.local
+vi /etc/rc.local
+nohup /root/keepalived_start.sh &
