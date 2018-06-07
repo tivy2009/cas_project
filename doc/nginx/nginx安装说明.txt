@@ -89,6 +89,9 @@ cd nginx-1.13.12
   然后 make 
   如果是第一次安装接着执行make install
   如果已经安装了，只是添加模块，则不用再执行make install  ,只需要复制nginx文件就可以 如 cp objs/nginx /usr/local/nginx/sbin/nginx 选择覆盖
+ 
+(安装ssl模块 make的时候报错，需要手动置顶openssl的源码包路径，然后再make，如下命令) 
+./configure --prefix=/usr/local/nginx --with-http_stub_status_module --with-http_ssl_module --with-openssl=/usr/local/openssl-1.1.1-pre7
   
 nginx 查看已经安装的模块 ./nginx -V
 
