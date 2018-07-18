@@ -1,0 +1,19 @@
+ 生产环境中的MQ服务器日常运维方式
+环境：Centos 7.2 X64、RabbitMQ V3.6.5、Haproxy V1.5.14、Keepalived V1.2.13
+JDK1.8、tomcat7
+
+1、（VIP）192.168.6.90 为RabbitMQ服务访问的虛拟IP(端口5670)
+部署说明（RabbitMQ）
+192.168.6.91(MQ-主节点)（用户名:root,密码:）
+192.168.6.92(MQ-副节点)（用户名:root,密码:）
+2、如果需重启，需使用root用户登录这两台（192.168.6.91，192.168.6.92），然后执行以下命令
+rabbitmqctl stop
+rabbitmq-server start&
+haproxy -f /etc/haproxy/haproxy.cfg
+systemctl start keepalived.service
+3、HA控制台
+http://192.168.6.90:8080/admin (可以常开网页，会自动刷新)
+上网址为机器集群状态监控，用户名admin,密码admin
+4、MQ控制台
+http://192.168.6.90:15672(可以常开网页，会自动刷新)
+上网址为MQ控制台，用户名payment密码payment
