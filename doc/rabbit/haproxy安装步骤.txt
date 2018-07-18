@@ -1,0 +1,121 @@
+二、安装haproxy 
+查看内核版本
+
+uname -r
+
+关于编译参数更详细的参见：https://github.com/haproxy/haproxy
+
+解压haproxy，并安装
+
+tar xf haproxy-1.7.5.tar.gz
+cd haproxy-1.7.5
+make TARGET=linux2628 PREFIX=/usr/local/haproxy
+make install PREFIX=/usr/local/haproxy
+
+
+安装成功后，查看版本
+
+/usr/local/haproxy/sbin/haproxy -v
+
+复制haproxy文件到/usr/sbin下 
+因为下面的haproxy.init启动脚本默认会去/usr/sbin下找，当然你也可以修改，不过比较麻烦。
+
+cp /usr/local/haproxy/sbin/haproxy /usr/sbin/
+
+
+复制haproxy脚本，到/etc/init.d下
+
+cp ./examples/haproxy.init /etc/init.d/haproxy
+chmod 755 /etc/init.d/haproxy
+
+创建系统账号
+
+useradd -r haproxy
+1
+创建配置文件
+
+mkdir /etc/haproxy
+vi /etc/haproxy/haproxy.cfg
+
+在配置文件haproxy.cfg中添加如下设置：
+
+#全局配置
+global
+    #设置日志
+    log 127.0.0.1 local3 info
+    chroot /usr/local/haproxy
+    #用户与用户组
+    user haproxy
+    group haproxy
+    #守护进程启动
+    daemon
+    #最大连接数
+    maxconn 4000
+
+#默认配置
+defaults
+    log global
+    mode http
+    option httplog
+    option dontlognull
+    timeout connect 5000
+    timeout client 50000
+    timeout server 50000
+    option  httpclose       # 每次请求完毕后主动关闭http通道 
+    option  httplog         # 日志类别http日志格式 
+    #option  forwardfor      # 如果后端服务器需要获得客户端真实ip需要配置的参数，可以从Http Header中获得客户端ip  
+    option  redispatch      # serverId对应的服务器挂掉后,强制定向到其他健康的服务器
+    timeout connect 10000   # default 10 second timeout if a backend is not found
+    maxconn     60000       # 最大连接数
+    retries     3           # 3次连接失败就认为服务不可用，也可以通过后面设置 
+
+listen http_front
+        bind 0.0.0.0:1080           #监听端口  
+        stats refresh 30s           #统计页面自动刷新时间  
+        stats uri /haproxy?stats            #统计页面url  
+        stats realm Haproxy Manager #统计页面密码框上提示文本  
+        stats auth admin:admin      #统计页面用户名和密码设置
+
+listen rabbitmq_admin
+    bind 0.0.0.0:8004
+    server node1 192.168.201.197:15672
+    server node2 192.168.201.198:15672
+
+listen rabbitmq_cluster
+    bind 0.0.0.0:5670
+    option tcplog
+    mode tcp
+    timeout client  3h
+    timeout server  3h
+    option          clitcpka
+    balance roundrobin      #负载均衡算法（#banlance roundrobin 轮询，balance source 保存session值，支持static-rr，leastconn，first，uri等参数）
+    #balance url_param userid
+    #balance url_param session_id check_post 64
+    #balance hdr(User-Agent)
+    #balance hdr(host)
+    #balance hdr(Host) use_domain_only
+    #balance rdp-cookie
+    #balance leastconn
+    #balance source //ip
+    server   node1 192.168.201.197:5672 check inter 5s rise 2 fall 3   #check inter 2000 是检测心跳频率，rise 2是2次正确认为服务器可用，fall 3是3次失败认为服务器不可用
+    server   node2 192.168.201.198:5672 check inter 5s rise 2 fall 3
+
+打开rsyslog配置：
+vi /etc/rsyslog.conf
+去掉下面两行前面的#号
+$ModLoad imudp
+$UDPServerRun 514
+
+添加下面一行
+local3.* /var/log/haproxy.log
+重启rsyslog
+systemctl restart rsyslog
+# centos 6 中木有systemctl命令，可以使用下面的命令
+# service rsyslog restart
+
+启动haproxy
+service haproxy start
+
+控制台访问地址 http://192.168.201.17:1080/haproxy?stats  账号:admin/admin
+rabbitmq控制台访问地址 http://192.168.201.17:8004
+rabbitmq客户端连接地址 ip:192/168.201.17 端口:5670
