@@ -76,6 +76,9 @@ cd nginx-1.13.12
 --http-uwsgi-temp-path=/var/temp/nginx/uwsgi \
 --http-scgi-temp-path=/var/temp/nginx/scgi
 
+安装nginx_upstream_check_module-master模块前需要先执行对应版本的补丁文件
+yum install patch
+patch -p1 < /opt/nginx_source/nginx_upstream_check_module-master/check_1.12.1+.patch
 
 添加sticky模块安装，如果已经安装了需要再添加模块，必须要重新编译
  ./configure --prefix=/usr/local/nginx \
