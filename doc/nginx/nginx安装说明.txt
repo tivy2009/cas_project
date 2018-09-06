@@ -87,6 +87,9 @@ patch -p1 < /opt/nginx_source/nginx_upstream_check_module-master/check_1.12.1+.p
  --with-http_image_filter_module \
  --add-module=../nginx-goodies-nginx-sticky-module-ng \
  --add-module=../nginx_upstream_check_module-master
+ 
+ ./configure --prefix=/usr/local/nginx --with-http_stub_status_module --with-http_ssl_module --with-http_realip_module --with-http_image_filter_module --add-module=../nginx-goodies-nginx-sticky-module-ng --add-module=../nginx_upstream_check_module-master
+ 
  如果./configure报错提示需要安装GD lib模块，则执行如下命令安装
   yum install gd-devel
   
