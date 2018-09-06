@@ -184,3 +184,34 @@ server{
     }
 }
 
+下载编译 LuaJIT
+wget -c http://luajit.org/download/LuaJIT-2.0.5.tar.gz
+tar -zxvf LuaJIT-2.0.5.tar.gz
+cd LuaJIT-2.0.5
+make install PREFIX=/usr/local/luajit
+echo "/usr/local/luajit/lib" > /etc/ld.so.conf.d/usr_local_luajit_lib.conf
+ldconfig
+配置环境变量
+export LUAJIT_LIB=/usr/local/luajit/lib
+export LUAJIT_INC=/usr/local/luajit/include/luajit-2.0
+
+NDK与Lua_module
+wget -c https://github.com/simplresty/ngx_devel_kit/archive/v0.3.1rc1.tar.gz
+wget -c https://github.com/openresty/lua-nginx-module/archive/v0.10.13.tar.gz
+tar -zxvf v0.3.1rc1.tar.gz
+tar -zxvf v0.10.13.tar.gz
+
+./configure --add-module=../ngx_devel_kit-0.3.1rc1/ --add-module=../lua-nginx-module-0.10.13/
+
+./configure --prefix=/usr/local/nginx --with-http_stub_status_module --with-http_ssl_module --with-http_realip_module --with-http_image_filter_module --add-module=../nginx-goodies-nginx-sticky-module-ng --add-module=../nginx_upstream_check_module-master --add-module=../ngx_devel_kit-0.3.1rc1/ --add-module=../lua-nginx-module-0.10.13/
+
+make
+make install
+
+关闭防火墙
+systemctl stop firewalld
+systemctl disable firewalld
+
+
+lua-upstream-nginx-module
+https://github.com/openresty/lua-upstream-nginx-module/archive/v0.07.tar.gz
