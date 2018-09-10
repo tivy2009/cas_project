@@ -194,6 +194,7 @@ ldconfig
 配置环境变量
 export LUAJIT_LIB=/usr/local/luajit/lib
 export LUAJIT_INC=/usr/local/luajit/include/luajit-2.0
+export LUA_INCLUDE_DIR=/usr/local/luajit/include/luajit-2.0
 
 NDK与Lua_module
 wget -c https://github.com/simplresty/ngx_devel_kit/archive/v0.3.1rc1.tar.gz
@@ -215,6 +216,143 @@ systemctl disable firewalld
 
 lua-upstream-nginx-module
 https://github.com/openresty/lua-upstream-nginx-module/archive/v0.07.tar.gz
+./configure --prefix=/usr/local/nginx --with-ld-opt="-Wl,-rpath,$LUAJIT_LIB" --with-http_stub_status_module --with-http_ssl_module --with-http_realip_module --with-http_image_filter_module --add-module=../nginx-goodies-nginx-sticky-module-ng --add-module=../nginx_upstream_check_module-master --add-module=../ngx_devel_kit-0.3.1rc1/ --add-module=../lua-nginx-module-0.10.13/ --add-module=../lua-upstream-nginx-module-0.07/ 
+
+./configure --prefix=/opt/nginx \
+    --with-ld-opt="-Wl,-rpath,$LUAJIT_LIB" \
+    --add-module=/path/to/lua-nginx-module \
+    --add-module=/path/to/lua-upstream-nginx-module
+
+make -j2
+make install
+
 
 ngx_http_dyups_module
-https://github.com/yzprofile/ngx_http_dyups_module
+https://github.com/yzprofile/ngx_http_dyups_module/archive/v0.2.9.tar.gz
+./configure --prefix=/usr/local/nginx --with-ld-opt="-Wl,-rpath,$LUAJIT_LIB" --with-http_stub_status_module --with-http_ssl_module --with-http_realip_module --with-http_image_filter_module --add-module=../nginx-goodies-nginx-sticky-module-ng --add-module=../nginx_upstream_check_module-master --add-module=../ngx_devel_kit-0.3.1rc1/ --add-module=../lua-nginx-module-0.10.13/ --add-module=../lua-upstream-nginx-module-0.07/ --add-module=../ngx_http_dyups_module-0.2.9/
+make -j2
+make install
+
+curl -d "server 127.0.0.1:8089;server 127.0.0.1:8088;" 127.0.0.1:8081/upstream/dyhost
+curl -H "host: dyhost" 127.0.0.1:8080
+curl 127.0.0.1:8081/detail
+curl -i -X DELETE 127.0.0.1:8081/upstream/dyhost
+
+content_by_lua '
+    local dyups = require "ngx.dyups"
+
+    local status, rv = dyups.update("test", [[server 127.0.0.1:8088;]]);
+    ngx.print(status, rv)
+    if status ~= ngx.HTTP_OK then
+        ngx.print(status, rv)
+        return
+    end
+    ngx.print("update success")
+
+    status, rv = dyups.delete("test")
+    if status ~= ngx.HTTP_OK then
+        ngx.print(status, rv)
+        return
+    end
+    ngx.print("delete success")
+';
+
+error: ‘ngx_http_upstream_srv_conf_t’ has no member named ‘default_port’
+解决方法：在/opt/nginx-1.5.11/src/http/下的ngx_http_upstream.h中添加
+
+    ngx_array_t                     *values;
+    ngx_array_t                     *lengths;
+    ngx_uint_t                       retries;
+    
+    
+    位置是：
+     struct ngx_http_upstream_srv_conf_s {
+    ngx_http_upstream_peer_t         peer;
+    void                           **srv_conf;
+
+    ngx_array_t                     *servers;  /* ngx_http_upstream_server_t */
+
+    ngx_array_t                     *values;
+    ngx_array_t                     *lengths;
+    ngx_uint_t                       retries;
+
+    ngx_uint_t                       flags;
+    ngx_str_t                        host;
+    u_char                          *file_name;
+    ngx_uint_t                       line;
+    in_port_t                        port;
+    in_port_t                        default_port;
+    ngx_uint_t                       no_port;  /* unsigned no_port:1 */
+};
+  然后再次执行 make； 问题得到解决。
+  
+1、ngx_http_dyups_module(https://github.com/yzprofile/ngx_http_dyups_module)提供了粗粒度的upstream管理方法，可以对整个upstream进行新增，删除。 
+2、lua-upstream-nginx-module(https://github.com/openresty/lua-upstream-nginx-module) ，则提供了细粒度的管理方式，可以对某一个服务IP进行管理，其中提供的set_peer_down方法，可以对upstream中的某个ip进行上下线。
+3. 也可以使用ngx_dynamic_upstream(https://github.com/cubicdaiya/ngx_dynamic_upstream)
+这些插件有一个共同点，那就是在不需要重启nginx的基础上， 动态修改nginx的配置。 
+
+4、redis2-nginx-module模块安装 
+https://github.com/openresty/redis2-nginx-module/archive/v0.15.tar.gz
+./configure --prefix=/usr/local/nginx --with-ld-opt="-Wl,-rpath,$LUAJIT_LIB" --with-http_stub_status_module --with-http_ssl_module --with-http_realip_module --with-http_image_filter_module --add-module=../nginx-goodies-nginx-sticky-module-ng --add-module=../nginx_upstream_check_module-master --add-module=../ngx_devel_kit-0.3.1rc1/ --add-module=../lua-nginx-module-0.10.13/ --add-module=../lua-upstream-nginx-module-0.07/ --add-module=../ngx_http_dyups_module-0.2.9/ --add-module=../redis2-nginx-module-0.15/
+make -j2
+make install
+
+5、set-misc-nginx-module https://github.com/openresty/set-misc-nginx-module/archive/v0.32.tar.gz (按这个配置进行编译安装的)
+./configure --prefix=/usr/local/nginx --with-ld-opt="-Wl,-rpath,$LUAJIT_LIB" --with-http_stub_status_module --with-http_ssl_module --with-http_realip_module --with-http_image_filter_module --add-module=../nginx-goodies-nginx-sticky-module-ng --add-module=../nginx_upstream_check_module-master --add-module=../ngx_devel_kit-0.3.1rc1 --add-module=../lua-nginx-module-0.10.13 --add-module=../lua-upstream-nginx-module-0.07 --add-module=../ngx_http_dyups_module-0.2.9 --add-module=../redis2-nginx-module-0.15 --add-module=../set-misc-nginx-module-0.32
+make -j2
+make install
+cp objs/nginx /usr/local/nginx/sbin/nginx
+
+6、ngx_http_upstream_keepalive(失败，未安装)
+wget -c http://mdounin.ru/hg/ngx_http_upstream_keepalive/archive/tip.tar.gz
+./configure --prefix=/usr/local/nginx --with-ld-opt="-Wl,-rpath,$LUAJIT_LIB" --with-http_stub_status_module --with-http_ssl_module --with-http_realip_module --with-http_image_filter_module --add-module=../nginx-goodies-nginx-sticky-module-ng --add-module=../nginx_upstream_check_module-master --add-module=../ngx_devel_kit-0.3.1rc1/ --add-module=../lua-nginx-module-0.10.13/ --add-module=../lua-upstream-nginx-module-0.07/ --add-module=../ngx_http_dyups_module-0.2.9/ --add-module=../redis2-nginx-module-0.15/ --add-module=../set-misc-nginx-module-0.32/ --add-module=../ngx_http_upstream_keepalive-32e9e4b4b5e1/
+make -j2
+make install
+cp objs/nginx /usr/local/nginx/sbin/nginx
+
+
+=	开头表示精确匹配
+^~	开头表示uri以某个常规字符串开头，理解为匹配 url路径即可。nginx不对url做编码，因此请求为/static/20%/aa，可以被规则^~ /static/ /aa匹配到（注意是空格）
+~	开头表示区分大小写的正则匹配
+~*	开头表示不区分大小写的正则匹配
+!~和!~*	分别为区分大小写不匹配及不区分大小写不匹配 的正则
+/	通用匹配，任何请求都会匹配到。
+
+
+location = / {
+    proxy_pass http://tomcat:8080/index
+}
+location ^~ /static/ {
+    root /webroot/static/;
+}
+location ~* \.(gif|jpg|jpeg|png|css|js|ico)$ {
+    root /webroot/res/;
+}
+location / {
+    proxy_pass http://tomcat:8080/
+}
+
+7、lua-redis-parser
+https://github.com/openresty/lua-redis-parser/archive/v0.13.tar.gz
+cd lua-redis-parser-0.10 
+export LUA_INCLUDE_DIR=/usr/local/include/luajit-2.0/
+gmake CC=gcc 
+make install CC=gcc
+
+8、lua-cjson
+https://www.kyne.com.au/~mark/software/download/lua-cjson-2.1.0.tar.gz
+修改MakeFile
+[root@iZuf6679bcuj0vciz1vaicZ lua-cjson-2.1.0]# vi Makefile 
+#LUA_INCLUDE_DIR =   $(PREFIX)/include
+LUA_INCLUDE_DIR =   $(PREFIX)/include/luajit-2.0/
+#LUA_CMODULE_DIR =   $(PREFIX)/lib/lua/$(LUA_VERSION)
+LUA_CMODULE_DIR =   $(PREFIX)/lib
+#LUA_MODULE_DIR =    $(PREFIX)/share/lua/$(LUA_VERSION)
+LUA_MODULE_DIR =    $(PREFIX)/share/lua/luajit-2.0.5
+安装
+make
+make install
+
+
+ngx.say("capture failed")
+ngx.print(res.body)
